@@ -27,7 +27,7 @@ if (!url || !outfile) {
   await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
 
   // wait for images to settle
-  await page.waitForTimeout(2000);
+  await new Promise(r => setTimeout(r, 2000));
 
   // embed every image as base64 in-place
   const embedded = await page.evaluate(async () => {
