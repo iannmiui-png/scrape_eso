@@ -1,0 +1,37 @@
+name: scrape-esolangs
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'Esolangs wiki URL to scrape'
+        required: true
+        default: 'https://esolangs.org/wiki/Color_scheme'
+      filename:
+        description: 'Output filename (no extension)'
+        required: true
+        default: 'color_scheme'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Puppeteer
+        run: npm install puppeteer
+
+      - name: Scrape and embed
+        run: node scrape.js "${{ github.event.inputs.url }}" "${{ github.event.inputs.filename }}.html"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.inputs.filename }}
+          path: ${{ github.event.inputs.filename }}.html
+          retention-days: 7
